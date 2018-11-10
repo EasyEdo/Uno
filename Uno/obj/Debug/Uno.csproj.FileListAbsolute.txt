@@ -12,3 +12,10 @@ D:/Ein/2410_CSharp/Uno/Uno/obj/Debug/Uno.pdb
 /media/ethan/Ein/Ein/2410_CSharp/Uno/Uno/obj/Debug/Uno.csproj.CoreCompileInputs.cache
 /media/ethan/Ein/Ein/2410_CSharp/Uno/Uno/obj/Debug/Uno.exe
 /media/ethan/Ein/Ein/2410_CSharp/Uno/Uno/obj/Debug/Uno.pdb
+G:\Ein\2410_CSharp\Uno\Uno\bin\Debug\Uno.exe.config
+G:\Ein\2410_CSharp\Uno\Uno\bin\Debug\Uno.exe
+G:\Ein\2410_CSharp\Uno\Uno\bin\Debug\Uno.pdb
+G:\Ein\2410_CSharp\Uno\Uno\obj\Debug\Uno.csprojAssemblyReference.cache
+G:\Ein\2410_CSharp\Uno\Uno\obj\Debug\Uno.csproj.CoreCompileInputs.cache
+G:\Ein\2410_CSharp\Uno\Uno\obj\Debug\Uno.exe
+G:\Ein\2410_CSharp\Uno\Uno\obj\Debug\Uno.pdb

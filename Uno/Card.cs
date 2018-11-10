@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Uno {
-    public class Card {
+    public struct Card {
         
         private readonly ConsoleColor cardColor;
         private readonly int cardNum;
@@ -17,98 +17,111 @@ namespace Uno {
         private static ConsoleColor red = ConsoleColor.Red;
         private static ConsoleColor gray = ConsoleColor.Gray;
 
-        private static IList<Card> playerHand = new List<Card>();
-        private static IList<Card> compHand = new List<Card>();
+        private static IList<Card> cards = new List<Card>();
+        public static IList<Card> playerHand = new List<Card>();
+        public static IList<Card> compHand = new List<Card>();
+        public static IList<Card> discardPile = new List<Card>();
+
         private static readonly Random rand = new Random();
 
         public Card (ConsoleColor cardColor, int cardNum) {
             this.cardColor = cardColor;
             this.cardNum = cardNum;
         }
-        
-        /// <summary>
-        /// List of cards containing 21 of each color (yellow, blue, green, red)
-        /// with each color having two of each rank (0-9) except for zero.
-        /// Also includes cards of rank ten which are used to represent the draw
-        /// two cards. The cards that are gray in color represent the wild and
-        /// wild draw four cards.
-        /// </summary>
-        private static IList<Card> cards = new List<Card> {
-            new Card(yellow, 0), new Card(blue, 0), new Card(green, 0), new Card(red, 0),
-            new Card(yellow, 1), new Card(blue, 1), new Card(green, 1), new Card(red, 0),
-            new Card(yellow, 1), new Card(blue, 1), new Card(green, 1), new Card(red, 1),
-            new Card(yellow, 2), new Card(blue, 2), new Card(green, 2), new Card(red, 2),
-            new Card(yellow, 2), new Card(blue, 2), new Card(green, 2), new Card(red, 2),
-            new Card(yellow, 3), new Card(blue, 3), new Card(green, 3), new Card(red, 3),
-            new Card(yellow, 3), new Card(blue, 3), new Card(green, 3), new Card(red, 3),
-            new Card(yellow, 4), new Card(blue, 4), new Card(green, 4), new Card(red, 4),
-            new Card(yellow, 4), new Card(blue, 4), new Card(green, 4), new Card(red, 4),
-            new Card(yellow, 5), new Card(blue, 5), new Card(green, 5), new Card(red, 5),
-            new Card(yellow, 5), new Card(blue, 5), new Card(green, 5), new Card(red, 5),
-            new Card(yellow, 6), new Card(blue, 6), new Card(green, 6), new Card(red, 6),
-            new Card(yellow, 6), new Card(blue, 6), new Card(green, 6), new Card(red, 6),
-            new Card(yellow, 7), new Card(blue, 7), new Card(green, 7), new Card(red, 7),
-            new Card(yellow, 7), new Card(blue, 7), new Card(green, 7), new Card(red, 7),
-            new Card(yellow, 8), new Card(blue, 8), new Card(green, 8), new Card(red, 8),
-            new Card(yellow, 8), new Card(blue, 8), new Card(green, 8), new Card(red, 8),
-            new Card(yellow, 9), new Card(blue, 9), new Card(green, 9), new Card(red, 9),
-            new Card(yellow, 9), new Card(blue, 9), new Card(green, 9), new Card(red, 9),
-            
-            new Card(yellow, 10), new Card(blue, 10), new Card(green, 10), new Card(red, 10),// Draw Two
-            new Card(yellow, 10), new Card(blue, 10), new Card(green, 10), new Card(red, 10),
-            
-            new Card(gray, 11), new Card(gray, 11), new Card(gray, 11), new Card(gray, 11),// Wild Cards
-            new Card(gray, 11), new Card(gray, 11), new Card(gray, 11), new Card(gray, 11),
-            
-            new Card(gray, 12), new Card(gray, 12), new Card(gray, 12), new Card(gray, 12),// Wild +4
-            new Card(gray, 12), new Card(gray, 12), new Card(gray, 12), new Card(gray, 12)
-        };
 
+        /// <summary>
+        /// Adds cards to the List of cards containing 21 of each color 
+        /// (yellow, blue, green, red) with each color having two of each rank (0-9)
+        /// except for zero. Also includes cards of rank ten which are used to 
+        /// represent the draw two cards. The cards that are gray in color represent
+        /// the wild and wild draw four cards.
+        /// </summary>
+        public static void CreateCards() {
+            // Zero Cards
+            cards.Add(new Card(yellow,   0));
+            cards.Add(new Card(blue,     0));
+            cards.Add(new Card(green,    0));
+            cards.Add(new Card(red,      0));
+
+            // Normal Cards
+            for (int i = 1; i <= 10; i++) {
+                for (int j = 0; j < 2; j++) {
+                    cards.Add(new Card(yellow,   i));
+                    cards.Add(new Card(blue,     i));
+                    cards.Add(new Card(green,    i));
+                    cards.Add(new Card(red,      i));
+                }
+            }
+
+            // Wild Cards
+            for (int i = 0; i < 8; i++) {
+                cards.Add(new Card(gray, 11));
+            }
+
+            // Wild +4
+            for (int i = 0; i < 8; i++) {
+                cards.Add(new Card(gray, 12));
+            }
+        }
+
+        /// <summary>
+        /// Randomly adds cards from the card list to the players hand and
+        /// to the computers hand.
+        /// </summary>
         public static void DistributeHands() {
             for (int i = 0; i < 7; i++) {
-                
+                // Adding to Players Hand.
                 int tempRand = rand.Next(cards.Count);
                 Card tempCard = new Card(cards[tempRand].cardColor
                     , cards[tempRand].cardNum);
                 cards.Remove(tempCard);
                 playerHand.Add(tempCard);
-                
+
+                // Adding to Computers Hand.
                 int tempRand2 = rand.Next(cards.Count);
                 Card tempCard2 = new Card(cards[tempRand2].cardColor
                     , cards[tempRand2].cardNum);
                 cards.Remove(tempCard2);
                 compHand.Add(tempCard2);
             }
+
+            // Adding initial card to discard pile.
+            int tempRand3 = rand.Next(cards.Count);
+            Card tempCard3 = new Card(cards[tempRand3].cardColor
+                , cards[tempRand3].cardNum);
+            cards.Remove(tempCard3);
+            discardPile.Add(tempCard3);
         }
 
         /// <summary>
-        /// Method used to print a hand of cards.
+        /// Method used to print a hand of cards. Can also be used
+        /// to print the discard pile.
         /// </summary>
-        public static void printHands() {
+        public static void printHands(IList<Card> hand, int cursor) {
             int cardCount = 1;
-            if (playerHand.Count != 0) {
-                for (int k = 0; k < playerHand.Count; k++) {
+            if (hand.Count != 0) {
+                for (int k = 0; k < hand.Count; k++) {
                     for (int i = 0; i <= 2; i++) {
-                        Console.CursorLeft = 5;
+                        Console.CursorLeft = cursor;
                         for (int j = 0; j <= 3; j++) {
                             if (i == 0 && j == 0) {
                                 Console.BackgroundColor = ConsoleColor.Black;
-                                Console.CursorLeft = 5;
-                                if (playerHand[k].cardNum == 10) {
+                                Console.CursorLeft = cursor;
+                                if (hand[k].cardNum == 10) {
                                     Console.Write("+2");
                                     j++;
                                     continue; // Prevents card number being written.
                                 }
-                                if (playerHand[k].cardNum == 11) {
+                                if (hand[k].cardNum == 11) {
                                     Console.Write("W");
                                     continue;
                                 }
-                                if (playerHand[k].cardNum == 12) {
+                                if (hand[k].cardNum == 12) {
                                     Console.Write("W4");
                                     j += 2;
                                 }
                                 else {
-                                    Console.Write(playerHand[k].cardNum);
+                                    Console.Write(hand[k].cardNum);
                                     j++;
                                 }
                             }
@@ -118,11 +131,11 @@ namespace Uno {
                                 cardCount++;
                             }
                             else {
-                                Console.BackgroundColor = playerHand[k].cardColor;
+                                Console.BackgroundColor = hand[k].cardColor;
                                 Console.Write(" ");
                             }
                         }
-                        Console.CursorLeft = 5;
+                        Console.CursorLeft = cursor;
                         Console.WriteLine();
                     }
 
@@ -131,27 +144,24 @@ namespace Uno {
             }
         }
         
-
+        /// <summary>
+        /// Prints a title based off of the player and computers turn.
+        /// </summary>
+        /// <param name="turn"></param>
         public static void PrintTitle(bool turn) {
             Console.CursorTop = 3;
-            Console.CursorLeft = 20;
+            Console.CursorLeft = 26;
             Console.WriteLine("Welcome to Uno!");
 
-            Console.CursorLeft = 20;
+            Console.CursorLeft = 2;
             if (turn == true) {
-                Console.WriteLine("Player's Turn");
+                Console.WriteLine("Player's Turn, Choose a card to place or enter to draw and pass.\n");
             } else {
-                Console.WriteLine("Computer's Turn\n");
+                Console.WriteLine("Computer's Turn, please wait.\n");
                 turn = false;
             }
-            Console.CursorLeft = 20;
+            Console.CursorLeft = 26;
             Console.WriteLine("Discard Pile");
-        }
-
-        public static void PrintCard(ConsoleColor color, int num) {
-            for (int i = 0; i < 2; i++) {
-                
-            }
         }
     }
 }
